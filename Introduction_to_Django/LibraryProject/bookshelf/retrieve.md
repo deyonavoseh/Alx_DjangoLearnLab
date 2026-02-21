@@ -1,7 +1,12 @@
 # Retrieve Operation
 ```python
 from bookshelf.models import Book
-books = Book.objects.all()
-print(books)
-# Output: <QuerySet [<Book: 1984 by George Orwell (1949)>]>
+book = Book.objects.get(id=1)
+print(book.title)
+print(book.author)
+print(book.publication_year)
+# Output:
+# 1984
+# George Orwell
+# 1949
 ```
