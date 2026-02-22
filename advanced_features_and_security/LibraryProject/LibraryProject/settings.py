@@ -86,3 +86,6 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 SESSION_COOKIE_SECURE = False  # Set True in production
 CSRF_COOKIE_SECURE = False     # Set True in production
 X_FRAME_OPTIONS = 'DENY'
+
+# Tells Django to trust the X-Forwarded-Proto header from a proxy (e.g. Nginx)
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
