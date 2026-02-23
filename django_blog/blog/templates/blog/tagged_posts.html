@@ -1,0 +1,14 @@
+{% extends 'blog/base.html' %}
+{% block content %}
+<h2>Posts tagged: <span style="color:#3498db">{{ tag.name }}</span></h2>
+<p style="color:#777;margin-bottom:1rem">{{ posts.count }} post(s)</p>
+{% for post in posts %}
+<div class="card">
+    <h3><a href="{% url 'post-detail' post.pk %}" style="text-decoration:none;color:#2c3e50">{{ post.title }}</a></h3>
+    <p style="color:#777;font-size:13px">By {{ post.author.username }} on {{ post.published_date|date:"M d, Y" }}</p>
+    <p>{{ post.content|truncatewords:25 }}</p>
+</div>
+{% empty %}
+<div class="card"><p>No posts with this tag.</p></div>
+{% endfor %}
+{% endblock %}
