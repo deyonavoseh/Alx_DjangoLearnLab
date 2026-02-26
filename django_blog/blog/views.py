@@ -1,9 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.models import User
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.db.models import Q
@@ -11,8 +10,6 @@ from taggit.models import Tag
 from .models import Post, Comment
 from .forms import RegisterForm, ProfileForm, PostForm, CommentForm
 
-
-# ── Authentication ────────────────────────────────────────────────────────────
 
 def register_view(request):
     if request.method == 'POST':
@@ -54,8 +51,6 @@ def profile_view(request):
         form = ProfileForm(instance=request.user)
     return render(request, 'blog/profile.html', {'form': form})
 
-
-# ── Post CRUD ─────────────────────────────────────────────────────────────────
 
 class PostListView(ListView):
     model = Post
@@ -103,8 +98,6 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return self.get_object().author == self.request.user
 
 
-# ── Comments ──────────────────────────────────────────────────────────────────
-
 @login_required
 def comment_create(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
@@ -137,8 +130,6 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def get_success_url(self):
         return reverse_lazy('post-detail', kwargs={'pk': self.object.post.pk})
 
-
-# ── Search & Tags ─────────────────────────────────────────────────────────────
 
 def search_view(request):
     query = request.GET.get('q', '')
