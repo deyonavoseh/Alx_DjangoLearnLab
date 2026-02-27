@@ -11,8 +11,6 @@ from .models import Post, Comment
 from .forms import RegisterForm, ProfileForm, PostForm, CommentForm
 
 
-# ── Authentication ────────────────────────────────────────────────────────────
-
 def register_view(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
@@ -53,8 +51,6 @@ def profile_view(request):
         form = ProfileForm(instance=request.user)
     return render(request, 'blog/profile.html', {'form': form})
 
-
-# ── Post CRUD ─────────────────────────────────────────────────────────────────
 
 class PostListView(ListView):
     model = Post
@@ -102,8 +98,6 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return self.get_object().author == self.request.user
 
 
-# ── Comment CRUD ──────────────────────────────────────────────────────────────
-
 class CommentCreateView(LoginRequiredMixin, CreateView):
     model = Comment
     form_class = CommentForm
@@ -142,7 +136,21 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return reverse_lazy('post-detail', kwargs={'pk': self.object.post.pk})
 
 
-# ── Search & Tags ─────────────────────────────────────────────────────────────
+class PostByTagListView(ListView):
+    model = Post
+    template_name = 'blog/tagged_posts.html'
+    context_object_name = 'posts'
+    paginate_by = 10
+
+    def get_queryset(self):
+        tag = get_object_or_404(Tag, slug=self.kwargs['tag_slug'])
+        return Post.objects.filter(tags=tag)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tag'] = get_object_or_404(Tag, slug=self.kwargs['tag_slug'])
+        return context
+
 
 def search_view(request):
     query = request.GET.get('q', '')
